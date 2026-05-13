@@ -68,7 +68,7 @@ export default function Landing() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-sm font-medium mb-6 animate-fade-in">
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
-            Applications Open · 2024
+            Applications Open · 2026
           </div>
 
           <h1 className="text-5xl sm:text-7xl font-black text-white mb-6 leading-tight animate-slide-up">
@@ -77,7 +77,7 @@ export default function Landing() {
               Ideathon
             </span>
             <br />
-            2024
+            2026
           </h1>
 
           <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in">
@@ -224,7 +224,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="py-8 bg-gray-950 border-t border-gray-900 text-center text-gray-500 text-sm">
-        <p>© 2024 Gen-AI Ideathon. All rights reserved.</p>
+        <p>© 2026 Gen-AI Ideathon. All rights reserved.</p>
       </footer>
     </div>
   );
