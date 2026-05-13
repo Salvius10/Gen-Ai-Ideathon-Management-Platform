@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      String   @default("PARTICIPANT") // PARTICIPANT | MENTOR | JUDGE | ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownedTeam      Team?          @relation("TeamOwner")
+  teamMembership TeamMember?
+  mentorTeams    Team[]         @relation("TeamMentor")
+  evaluations    Evaluation[]
+  notifications  Notification[]
+}
+
+model Team {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  code             String   @unique
+  problemStatement String
+  description      String
+  ownerId          String   @unique
+  mentorId         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  owner       User         @relation("TeamOwner", fields: [ownerId], references: [id])
+  mentor      User?        @relation("TeamMentor", fields: [mentorId], references: [id])
+  members     TeamMember[]
+  checkIn1    CheckIn1?
+  checkIn2    CheckIn2?
+  submission  Submission?
+  evaluations Evaluation[]
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String   @unique
+  joinedAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CheckIn1 {
+  id          String   @id @default(cuid())
+  teamId      String   @unique
+  techStack   String
+  workflow    String
+  approach    String
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model CheckIn2 {
+  id             String   @id @default(cuid())
+  teamId         String   @unique
+  githubLink     String
+  workflowStatus String
+  progressUpdate String
+  submittedAt    DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  teamId      String   @unique
+  githubLink  String
+  description String
+  submittedAt DateTime @default(now())
+  locked      Boolean  @default(true)
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Evaluation {
+  id           String   @id @default(cuid())
+  teamId       String
+  judgeId      String
+  technicality Int
+  wowFactor    Int
+  creativity   Int
+  useCase      Int
+  total        Int
+  comments     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  team  Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  judge User @relation(fields: [judgeId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, judgeId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
