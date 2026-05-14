@@ -115,12 +115,12 @@ export default function EvaluatePage() {
             <div className="card">
               <h3 className="font-semibold text-gray-800 mb-3">Final Submission</h3>
               <a
-                href={team.submission.githubLink}
+                href={team.submission.sharepointLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-brand-600 underline text-sm break-all block mb-3"
               >
-                {team.submission.githubLink}
+                {team.submission.sharepointLink}
               </a>
               <p className="text-sm text-gray-600 line-clamp-3">{team.submission.description}</p>
             </div>

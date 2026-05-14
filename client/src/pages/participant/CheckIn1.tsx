@@ -64,7 +64,7 @@ export default function CheckIn1() {
           <p className="text-gray-500">Share your technical approach and early progress with your mentor.</p>
           {existing && (
             <p className="text-sm text-green-600 mt-2 font-medium">
-              Previously submitted: {formatDate(existing.submittedAt)} — you can update it below.
+              Previously submitted: {formatDate(existing.submittedAt)}
             </p>
           )}
         </div>
@@ -111,7 +111,6 @@ export default function CheckIn1() {
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
               <p className="text-sm text-blue-700">
                 <strong>Tip:</strong> Be specific and detailed. Your mentor will use this to guide you in the right direction.
-                You can update your check-in any time before Check-In 2.
               </p>
             </div>
 

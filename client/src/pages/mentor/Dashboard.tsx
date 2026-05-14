@@ -175,8 +175,8 @@ export default function MentorDashboard() {
                         </h3>
                         <div className="bg-green-50 rounded-xl p-4 border border-green-200">
                           <p className="text-xs text-green-600 mb-2">Submitted: {formatDate(team.submission.submittedAt)}</p>
-                          <a href={team.submission.githubLink} target="_blank" rel="noopener noreferrer"
-                            className="text-brand-600 underline text-sm break-all block mb-2">{team.submission.githubLink}</a>
+                          <a href={team.submission.sharepointLink} target="_blank" rel="noopener noreferrer"
+                            className="text-brand-600 underline text-sm break-all block mb-2">{team.submission.sharepointLink}</a>
                           <p className="text-sm text-gray-700">{team.submission.description}</p>
                         </div>
                       </div>

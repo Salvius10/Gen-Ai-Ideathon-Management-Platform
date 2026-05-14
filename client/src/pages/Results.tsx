@@ -141,12 +141,12 @@ export default function Results() {
                     <div className="text-xs text-gray-400 mt-1">/ 400</div>
                     {r.team.submission && (
                       <a
-                        href={r.team.submission.githubLink}
+                        href={r.team.submission.sharepointLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-2 text-xs text-brand-600 hover:underline block"
                       >
-                        View Repo ↗
+                        View Submission ↗
                       </a>
                     )}
                   </div>

@@ -1,6 +1,8 @@
 import { Router, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { authenticate, requireRole, AuthRequest } from '../middleware/auth';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
 
@@ -12,12 +14,28 @@ async function getTeamForUser(userId: string) {
   return member?.team ?? null;
 }
 
+const SUBMISSIONS_DIR = path.join(process.cwd(), 'submissions');
+const SUBMISSIONS_CSV = path.join(SUBMISSIONS_DIR, 'sharepoint-links.csv');
+
+function appendSubmissionToFile(teamName: string, sharepointLink: string, description: string) {
+  if (!fs.existsSync(SUBMISSIONS_DIR)) fs.mkdirSync(SUBMISSIONS_DIR, { recursive: true });
+  const isNew = !fs.existsSync(SUBMISSIONS_CSV);
+  const row = `"${new Date().toISOString()}","${teamName.replace(/"/g, '""')}","${sharepointLink.replace(/"/g, '""')}","${description.replace(/"/g, '""').replace(/\n/g, ' ')}"\n`;
+  if (isNew) fs.writeFileSync(SUBMISSIONS_CSV, 'submittedAt,teamName,sharepointLink,description\n');
+  fs.appendFileSync(SUBMISSIONS_CSV, row);
+}
+
 router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequest, res: Response): Promise<void> => {
-  const { githubLink, description } = req.body;
+  const { sharepointLink, description } = req.body;
   const userId = req.user!.userId;
 
-  if (!githubLink || !description) {
-    res.status(400).json({ message: 'GitHub link and description are required' });
+  if (!sharepointLink || !description) {
+    res.status(400).json({ message: 'SharePoint link and description are required' });
+    return;
+  }
+
+  if (!sharepointLink.startsWith('https://')) {
+    res.status(400).json({ message: 'Please provide a valid SharePoint URL' });
     return;
   }
 
@@ -41,9 +59,11 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
 
   const submission = await prisma.submission.upsert({
     where: { teamId: team.id },
-    update: { githubLink, description, locked: true },
-    create: { teamId: team.id, githubLink, description, locked: true },
+    update: { sharepointLink, description, locked: true },
+    create: { teamId: team.id, sharepointLink, description, locked: true },
   });
+
+  appendSubmissionToFile(team.name, sharepointLink, description);
 
   // Notify admin and judges
   const notifyUsers = await prisma.user.findMany({

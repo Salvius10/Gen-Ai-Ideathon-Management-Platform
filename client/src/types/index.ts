@@ -45,7 +45,7 @@ export interface CheckIn2 {
 export interface Submission {
   id: string;
   teamId: string;
-  githubLink: string;
+  sharepointLink: string;
   description: string;
   submittedAt: string;
   locked: boolean;

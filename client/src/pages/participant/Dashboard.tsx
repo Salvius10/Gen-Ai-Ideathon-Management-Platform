@@ -238,12 +238,12 @@ export default function ParticipantDashboard() {
                 Submission is <strong>locked</strong>.
               </p>
               <a
-                href={team.submission.githubLink}
+                href={team.submission.sharepointLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex items-center gap-2 text-sm text-green-700 underline"
               >
-                View Repository →
+                View Submission →
               </a>
             </div>
           )}

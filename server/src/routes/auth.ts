@@ -13,7 +13,6 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
     res.status(400).json({ message: 'Username, email, and password are required' });
     return;
   }
-
   const existing = await prisma.user.findFirst({
     where: { OR: [{ email }, { username }] },
   });

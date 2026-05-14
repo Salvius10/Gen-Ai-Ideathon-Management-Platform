@@ -2,7 +2,7 @@ import api from './client';
 import { Submission } from '../types';
 
 export const submissionApi = {
-  submit: (data: { githubLink: string; description: string }) =>
+  submit: (data: { sharepointLink: string; description: string }) =>
     api.post<Submission>('/submission', data).then((r) => r.data),
 
   getByTeam: (teamId: string) =>

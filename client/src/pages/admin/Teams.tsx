@@ -158,12 +158,12 @@ export default function AdminTeams() {
 
                     {team.submission && (
                       <a
-                        href={team.submission.githubLink}
+                        href={team.submission.sharepointLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-secondary text-sm text-center"
                       >
-                        View Repo ↗
+                        View Submission ↗
                       </a>
                     )}
 

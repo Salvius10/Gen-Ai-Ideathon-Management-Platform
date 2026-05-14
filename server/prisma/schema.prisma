@@ -79,12 +79,12 @@ model CheckIn2 {
 }
 
 model Submission {
-  id          String   @id @default(cuid())
-  teamId      String   @unique
-  githubLink  String
-  description String
-  submittedAt DateTime @default(now())
-  locked      Boolean  @default(true)
+  id             String   @id @default(cuid())
+  teamId         String   @unique
+  sharepointLink String
+  description    String
+  submittedAt    DateTime @default(now())
+  locked         Boolean  @default(true)
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }

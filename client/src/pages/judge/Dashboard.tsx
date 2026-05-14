@@ -113,13 +113,13 @@ export default function JudgeDashboard() {
                     <div className="flex items-center gap-4 text-xs text-gray-400">
                       <span>{sub.team.members?.length ?? 0} members</span>
                       <a
-                        href={sub.githubLink}
+                        href={sub.sharepointLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-brand-600 hover:underline"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        View Repository ↗
+                        View Submission ↗
                       </a>
                     </div>
 

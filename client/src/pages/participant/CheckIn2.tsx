@@ -50,8 +50,8 @@ export default function CheckIn2() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!form.githubLink.startsWith('https://github.com')) {
-      toast.error('Please provide a valid GitHub URL');
+    if (!form.githubLink.startsWith('https://')) {
+      toast.error('Please provide a valid GitHub or SharePoint URL');
       return;
     }
     setLoading(true);
@@ -76,7 +76,7 @@ export default function CheckIn2() {
             <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-bold">Step 5</span>
             <h1 className="text-3xl font-bold text-gray-900">Check-In 2</h1>
           </div>
-          <p className="text-gray-500">Share your GitHub repository and current implementation progress.</p>
+          <p className="text-gray-500">Share your GitHub / SharePoint link and current implementation progress.</p>
           {existing && (
             <p className="text-sm text-green-600 mt-2 font-medium">
               Previously submitted: {formatDate(existing.submittedAt)} — you can update before final submission.
@@ -87,16 +87,16 @@ export default function CheckIn2() {
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="label">GitHub Repository Link</label>
+              <label className="label">GitHub / SharePoint Link</label>
               <input
                 type="url"
                 required
                 value={form.githubLink}
                 onChange={(e) => setForm({ ...form, githubLink: e.target.value })}
-                placeholder="https://github.com/username/repo"
+                placeholder="https://github.com/username/repo  or  https://yourorg.sharepoint.com/..."
                 className="input font-mono"
               />
-              <p className="text-xs text-gray-400 mt-1">Must be a valid public GitHub repository URL.</p>
+              <p className="text-xs text-gray-400 mt-1">Provide either your GitHub repository or SharePoint folder link.</p>
             </div>
 
             <div>
@@ -125,8 +125,8 @@ export default function CheckIn2() {
 
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
               <p className="text-sm text-blue-700">
-                <strong>Note:</strong> Make sure your repository is public so judges can review your code.
-                You can update this before your final submission.
+                <strong>Note:</strong> If using GitHub, make sure your repository is public. If using SharePoint, ensure the link is accessible to the judges.
+                (In the Final Submission only Sharepoint url will be accepted)*
               </p>
             </div>
 

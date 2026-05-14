@@ -74,6 +74,11 @@ router.post('/2', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequ
     return;
   }
 
+  if (!githubLink.startsWith('https://')) {
+    res.status(400).json({ message: 'Please provide a valid GitHub or SharePoint URL' });
+    return;
+  }
+
   const team = await getTeamForUser(userId);
   if (!team) {
     res.status(400).json({ message: 'You must be in a team to submit check-in' });

@@ -9,17 +9,11 @@ import { Team } from '../../types';
 export default function SubmissionPage() {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ githubLink: '', description: '' });
+  const [form, setForm] = useState({ sharepointLink: '', description: '' });
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
   const team = user?.team as Team | null | undefined;
-
-  useEffect(() => {
-    if (team?.checkIn2) {
-      setForm((f) => ({ ...f, githubLink: team.checkIn2?.githubLink || '' }));
-    }
-  }, [team]);
 
   if (!team) {
     return (
@@ -53,14 +47,14 @@ export default function SubmissionPage() {
               Your final submission has been received and locked. Good luck with the evaluation!
             </p>
             <div className="inline-block bg-white rounded-xl p-4 border border-green-200 text-left mb-6">
-              <p className="text-sm font-semibold text-gray-700 mb-1">Repository:</p>
+              <p className="text-sm font-semibold text-gray-700 mb-1">SharePoint Folder:</p>
               <a
-                href={team.submission.githubLink}
+                href={team.submission.sharepointLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-brand-600 underline text-sm break-all"
               >
-                {team.submission.githubLink}
+                {team.submission.sharepointLink}
               </a>
             </div>
             <button onClick={() => navigate('/dashboard')} className="btn-primary">
@@ -78,8 +72,8 @@ export default function SubmissionPage() {
       toast.error('Please confirm that your submission is final.');
       return;
     }
-    if (!form.githubLink.startsWith('https://github.com')) {
-      toast.error('Please provide a valid GitHub URL');
+    if (!form.sharepointLink.startsWith('https://')) {
+      toast.error('Please provide a valid SharePoint URL');
       return;
     }
     setLoading(true);
@@ -115,7 +109,7 @@ export default function SubmissionPage() {
                 <h3 className="font-bold text-red-800">Warning: Final Submission</h3>
                 <p className="text-sm text-red-700 mt-1">
                   Once submitted, your project is <strong>locked permanently</strong>. You will not be able to modify
-                  your GitHub link or description. Make sure everything is ready before submitting.
+                  your SharePoint link or description. Make sure everything is ready before submitting.
                 </p>
               </div>
             </div>
@@ -123,16 +117,16 @@ export default function SubmissionPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="label">Final GitHub Repository Link</label>
+              <label className="label">Final SharePoint Folder Link</label>
               <input
                 type="url"
                 required
-                value={form.githubLink}
-                onChange={(e) => setForm({ ...form, githubLink: e.target.value })}
-                placeholder="https://github.com/username/final-repo"
+                value={form.sharepointLink}
+                onChange={(e) => setForm({ ...form, sharepointLink: e.target.value })}
+                placeholder="https://yourorg.sharepoint.com/..."
                 className="input font-mono"
               />
-              <p className="text-xs text-gray-400 mt-1">Make sure the repository is public and contains all final code.</p>
+              <p className="text-xs text-gray-400 mt-1">Paste the SharePoint folder link containing your final project files.</p>
             </div>
 
             <div>
