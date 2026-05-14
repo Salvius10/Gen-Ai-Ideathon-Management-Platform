@@ -10,6 +10,7 @@ import evaluationRoutes from './routes/evaluation';
 import mentorRoutes from './routes/mentors';
 import adminRoutes from './routes/admin';
 import notificationRoutes from './routes/notifications';
+import eventRoutes from './routes/events';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,7 @@ app.use('/api/evaluation', evaluationRoutes);
 app.use('/api/mentors', mentorRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/events', eventRoutes);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 

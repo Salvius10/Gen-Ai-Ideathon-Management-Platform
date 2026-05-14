@@ -21,6 +21,7 @@ import EvaluatePage from './pages/judge/Evaluate';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminTeams from './pages/admin/Teams';
 import AdminUsers from './pages/admin/Users';
+import AdminEventControl from './pages/admin/EventControl';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleRoute from './components/RoleRoute';
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/teams" element={<AdminTeams />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/events" element={<AdminEventControl />} />
         </Route>
       </Route>
 

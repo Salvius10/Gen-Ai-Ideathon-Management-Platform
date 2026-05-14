@@ -101,6 +101,12 @@ export interface EvaluationResult {
   judgeCount: number;
 }
 
+export interface EventConfig {
+  event: string;
+  label: string;
+  isOpen: boolean;
+}
+
 export interface Notification {
   id: string;
   userId: string;

@@ -6,9 +6,19 @@ import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
 const router = Router();
 
+async function isEventOpen(event: string): Promise<boolean> {
+  const config = await prisma.eventConfig.findUnique({ where: { event } });
+  return config?.isOpen ?? false;
+}
+
 router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequest, res: Response): Promise<void> => {
   const { name, problemStatement, description } = req.body;
   const userId = req.user!.userId;
+
+  if (!await isEventOpen('TEAM_REGISTRATION')) {
+    res.status(403).json({ message: 'Team registration is currently closed.' });
+    return;
+  }
 
   if (!name || !problemStatement || !description) {
     res.status(400).json({ message: 'Name, problem statement, and description are required' });
@@ -59,6 +69,11 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
 router.post('/join', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequest, res: Response): Promise<void> => {
   const { code } = req.body;
   const userId = req.user!.userId;
+
+  if (!await isEventOpen('TEAM_REGISTRATION')) {
+    res.status(403).json({ message: 'Team registration is currently closed.' });
+    return;
+  }
 
   if (!code) {
     res.status(400).json({ message: 'Team code is required' });

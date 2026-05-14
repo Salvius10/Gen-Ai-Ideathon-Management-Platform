@@ -4,6 +4,11 @@ import { authenticate, requireRole, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
+async function isEventOpen(event: string): Promise<boolean> {
+  const config = await prisma.eventConfig.findUnique({ where: { event } });
+  return config?.isOpen ?? false;
+}
+
 async function getTeamForUser(userId: string) {
   const member = await prisma.teamMember.findUnique({
     where: { userId },
@@ -17,6 +22,11 @@ async function getTeamForUser(userId: string) {
 router.post('/1', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequest, res: Response): Promise<void> => {
   const { techStack, workflow, approach } = req.body;
   const userId = req.user!.userId;
+
+  if (!await isEventOpen('CHECKIN_1')) {
+    res.status(403).json({ message: 'Check-In 1 is currently closed.' });
+    return;
+  }
 
   if (!techStack || !workflow || !approach) {
     res.status(400).json({ message: 'All fields are required' });
@@ -68,6 +78,11 @@ router.get('/1/:teamId', authenticate, async (req: AuthRequest, res: Response): 
 router.post('/2', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequest, res: Response): Promise<void> => {
   const { githubLink, workflowStatus, progressUpdate } = req.body;
   const userId = req.user!.userId;
+
+  if (!await isEventOpen('CHECKIN_2')) {
+    res.status(403).json({ message: 'Check-In 2 is currently closed.' });
+    return;
+  }
 
   if (!githubLink || !workflowStatus || !progressUpdate) {
     res.status(400).json({ message: 'All fields are required' });

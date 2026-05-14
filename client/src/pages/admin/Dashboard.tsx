@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid sm:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Link to="/admin/users" className="card hover:shadow-md transition-shadow group">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 rounded-xl bg-brand-100 flex items-center justify-center text-2xl group-hover:bg-brand-200 transition-colors">
@@ -92,17 +92,30 @@ export default function AdminDashboard() {
             </div>
           </div>
         </Link>
+
+        <Link to="/admin/events" className="card hover:shadow-md transition-shadow group">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-xl bg-red-100 flex items-center justify-center text-2xl group-hover:bg-red-200 transition-colors">
+              🎛️
+            </div>
+            <div>
+              <h2 className="font-bold text-gray-900">Event Control</h2>
+              <p className="text-sm text-gray-500">Open or close each phase for participants.</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Instructions */}
       <div className="mt-8 card border-amber-200 bg-amber-50">
         <h3 className="font-bold text-amber-800 mb-3">Admin Workflow</h3>
         <ol className="text-sm text-amber-700 space-y-2 list-decimal list-inside">
-          <li>Participants register and create/join teams.</li>
+          <li>Use <strong>Event Control</strong> to open Team Registration so participants can create/join teams.</li>
           <li>Go to <strong>Manage Users</strong> to assign MENTOR and JUDGE roles.</li>
           <li>Go to <strong>Manage Teams</strong> to assign mentors to teams.</li>
-          <li>Participants complete Check-In 1 and Check-In 2.</li>
-          <li>Participants submit their final project (locked after submission).</li>
+          <li>Open <strong>Check-In 1</strong> in Event Control when ready; close it after the deadline.</li>
+          <li>Open <strong>Check-In 2</strong> in Event Control when ready; close it after the deadline.</li>
+          <li>Open <strong>Final Submission</strong> in Event Control; close it after the deadline.</li>
           <li>Judges evaluate all submitted projects from the Judge Panel.</li>
           <li>View <strong>Results</strong> for final rankings.</li>
         </ol>

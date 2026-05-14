@@ -1,5 +1,5 @@
 import api from './client';
-import { AdminStats, Team, User } from '../types';
+import { AdminStats, EventConfig, Team, User } from '../types';
 
 export const adminApi = {
   getStats: () => api.get<AdminStats>('/admin/stats').then((r) => r.data),
@@ -19,4 +19,9 @@ export const adminApi = {
 
   assignMentor: (teamId: string, mentorId: string) =>
     api.post<Team>('/mentors/assign', { teamId, mentorId }).then((r) => r.data),
+
+  getEvents: () => api.get<EventConfig[]>('/admin/events').then((r) => r.data),
+
+  toggleEvent: (event: string, isOpen: boolean) =>
+    api.patch<EventConfig>(`/admin/events/${event}`, { isOpen }).then((r) => r.data),
 };

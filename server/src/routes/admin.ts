@@ -91,4 +91,25 @@ router.delete('/teams/:id', authenticate, requireRole('ADMIN'), async (req: Auth
   res.json({ message: 'Team deleted' });
 });
 
+// ─── Event Control ────────────────────────────────────────────────────────────
+
+router.get('/events', authenticate, requireRole('ADMIN'), async (_req: AuthRequest, res: Response): Promise<void> => {
+  const events = await prisma.eventConfig.findMany({ orderBy: { event: 'asc' } });
+  res.json(events);
+});
+
+router.patch('/events/:event', authenticate, requireRole('ADMIN'), async (req: AuthRequest, res: Response): Promise<void> => {
+  const { isOpen } = req.body;
+  if (typeof isOpen !== 'boolean') {
+    res.status(400).json({ message: 'isOpen must be a boolean' });
+    return;
+  }
+
+  const config = await prisma.eventConfig.update({
+    where: { event: req.params.event },
+    data: { isOpen },
+  });
+  res.json(config);
+});
+
 export default router;

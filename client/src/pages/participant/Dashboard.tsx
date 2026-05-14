@@ -3,14 +3,16 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Layout from '../../components/layout/Layout';
 import Badge from '../../components/ui/Badge';
-import { Team } from '../../types';
+import { EventConfig, Team } from '../../types';
 import { formatDate } from '../../utils/date';
+import { eventsApi } from '../../api/events';
 
 interface Step {
   id: number;
   label: string;
   desc: string;
   done: boolean;
+  eventKey?: string;
   action?: { label: string; href: string };
 }
 
@@ -26,7 +28,9 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-function ProgressSteps({ team }: { team: Team | null }) {
+function ProgressSteps({ team, events }: { team: Team | null; events: EventConfig[] }) {
+  const isOpen = (key: string) => events.find((e) => e.event === key)?.isOpen ?? true;
+
   const steps: Step[] = [
     {
       id: 1,
@@ -39,7 +43,8 @@ function ProgressSteps({ team }: { team: Team | null }) {
       label: 'Team Setup',
       desc: team ? `Member of "${team.name}"` : 'Create or join a team.',
       done: !!team,
-      action: !team ? { label: 'Create Team', href: '/team/create' } : undefined,
+      eventKey: 'TEAM_REGISTRATION',
+      action: (!team && isOpen('TEAM_REGISTRATION')) ? { label: 'Create Team', href: '/team/create' } : undefined,
     },
     {
       id: 3,
@@ -52,58 +57,70 @@ function ProgressSteps({ team }: { team: Team | null }) {
       label: 'Check-In 1',
       desc: 'Submit tech stack & approach.',
       done: !!(team?.checkIn1),
-      action: (team && team.mentor && !team.checkIn1) ? { label: 'Submit Check-In 1', href: '/checkin/1' } : undefined,
+      eventKey: 'CHECKIN_1',
+      action: (team && team.mentor && !team.checkIn1 && isOpen('CHECKIN_1')) ? { label: 'Submit Check-In 1', href: '/checkin/1' } : undefined,
     },
     {
       id: 5,
       label: 'Check-In 2',
-      desc: 'Submit GitHub link & progress.',
+      desc: 'Submit GitHub / SharePoint link & progress.',
       done: !!(team?.checkIn2),
-      action: (team && team.checkIn1 && !team.checkIn2) ? { label: 'Submit Check-In 2', href: '/checkin/2' } : undefined,
+      eventKey: 'CHECKIN_2',
+      action: (team && team.checkIn1 && !team.checkIn2 && isOpen('CHECKIN_2')) ? { label: 'Submit Check-In 2', href: '/checkin/2' } : undefined,
     },
     {
       id: 6,
       label: 'Final Submission',
       desc: team?.submission ? 'Submitted and locked.' : 'Submit your final project.',
       done: !!(team?.submission),
-      action: (team && team.checkIn2 && !team.submission) ? { label: 'Final Submit', href: '/submit' } : undefined,
+      eventKey: 'FINAL_SUBMISSION',
+      action: (team && team.checkIn2 && !team.submission && isOpen('FINAL_SUBMISSION')) ? { label: 'Final Submit', href: '/submit' } : undefined,
     },
   ];
 
   return (
     <div className="space-y-3">
-      {steps.map((step, i) => (
-        <div
-          key={step.id}
-          className={`flex items-center gap-4 p-4 rounded-xl border transition-colors ${
-            step.done
-              ? 'bg-green-50 border-green-200'
-              : i > 0 && !steps[i - 1].done
-              ? 'bg-gray-50 border-gray-100 opacity-60'
-              : 'bg-white border-gray-200'
-          }`}
-        >
-          <div className={`h-9 w-9 flex-shrink-0 rounded-full flex items-center justify-center font-bold text-sm ${
-            step.done ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
-          }`}>
-            {step.done ? '✓' : step.id}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-semibold text-gray-900">{step.label}</p>
-              <Badge variant={step.done ? 'success' : 'default'}>
-                {step.done ? 'Complete' : 'Pending'}
-              </Badge>
+      {steps.map((step, i) => {
+        const closed = !step.done && !!step.eventKey && !isOpen(step.eventKey);
+        const blocked = !step.done && i > 0 && !steps[i - 1].done;
+
+        return (
+          <div
+            key={step.id}
+            className={`flex items-center gap-4 p-4 rounded-xl border transition-colors ${
+              step.done
+                ? 'bg-green-50 border-green-200'
+                : closed
+                ? 'bg-gray-50 border-gray-200 opacity-60'
+                : blocked
+                ? 'bg-gray-50 border-gray-100 opacity-60'
+                : 'bg-white border-gray-200'
+            }`}
+          >
+            <div className={`h-9 w-9 flex-shrink-0 rounded-full flex items-center justify-center font-bold text-sm ${
+              step.done ? 'bg-green-500 text-white' : closed ? 'bg-gray-300 text-gray-400' : 'bg-gray-200 text-gray-500'
+            }`}>
+              {step.done ? '✓' : closed ? '🔒' : step.id}
             </div>
-            <p className="text-sm text-gray-500 mt-0.5">{step.desc}</p>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-semibold text-gray-900">{step.label}</p>
+                {step.done && <Badge variant="success">Complete</Badge>}
+                {!step.done && closed && <Badge variant="default">Closed</Badge>}
+                {!step.done && !closed && <Badge variant="default">Pending</Badge>}
+              </div>
+              <p className="text-sm text-gray-500 mt-0.5">
+                {closed ? 'This phase is currently closed by the admin.' : step.desc}
+              </p>
+            </div>
+            {step.action && (
+              <Link to={step.action.href} className="btn-primary text-sm py-2 flex-shrink-0">
+                {step.action.label}
+              </Link>
+            )}
           </div>
-          {step.action && (
-            <Link to={step.action.href} className="btn-primary text-sm py-2 flex-shrink-0">
-              {step.action.label}
-            </Link>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -111,10 +128,12 @@ function ProgressSteps({ team }: { team: Team | null }) {
 export default function ParticipantDashboard() {
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState<EventConfig[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    refreshUser().finally(() => setLoading(false));
+    Promise.all([refreshUser(), eventsApi.getAll().then(setEvents).catch(() => {})])
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -141,7 +160,7 @@ export default function ParticipantDashboard() {
                 ))}
               </div>
             ) : (
-              <ProgressSteps team={team ?? null} />
+              <ProgressSteps team={team ?? null} events={events} />
             )}
           </div>
         </div>
@@ -152,15 +171,24 @@ export default function ParticipantDashboard() {
           {!team ? (
             <div className="card">
               <h2 className="text-lg font-bold text-gray-900 mb-4">Join or Create a Team</h2>
-              <p className="text-sm text-gray-500 mb-5">You need to be in a team to participate.</p>
-              <div className="space-y-3">
-                <Link to="/team/create" className="btn-primary w-full justify-center">
-                  Create a Team
-                </Link>
-                <Link to="/team/join" className="btn-secondary w-full justify-center">
-                  Join with Code
-                </Link>
-              </div>
+              {events.find((e) => e.event === 'TEAM_REGISTRATION')?.isOpen === false ? (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
+                  <p className="text-sm text-gray-500 font-medium">Team registration is currently closed.</p>
+                  <p className="text-xs text-gray-400 mt-1">Check back when the admin opens this phase.</p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-500 mb-5">You need to be in a team to participate.</p>
+                  <div className="space-y-3">
+                    <Link to="/team/create" className="btn-primary w-full justify-center">
+                      Create a Team
+                    </Link>
+                    <Link to="/team/join" className="btn-secondary w-full justify-center">
+                      Join with Code
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <div className="card">

@@ -29,6 +29,12 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
   const { sharepointLink, description } = req.body;
   const userId = req.user!.userId;
 
+  const eventOpen = await prisma.eventConfig.findUnique({ where: { event: 'FINAL_SUBMISSION' } });
+  if (!eventOpen?.isOpen) {
+    res.status(403).json({ message: 'Final submission is currently closed.' });
+    return;
+  }
+
   if (!sharepointLink || !description) {
     res.status(400).json({ message: 'SharePoint link and description are required' });
     return;
