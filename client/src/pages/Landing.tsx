@@ -137,7 +137,7 @@ export default function Landing() {
           {/* Stats */}
           <div className="flex items-center justify-center gap-12 mt-16 text-center">
             {[
-              { val: '48h', label: 'Hackathon', orange: true },
+              { val: '4 weeks', label: 'Hackathon', orange: true },
               { val: '5', label: 'Members per Team', orange: false },
               { val: '4', label: 'Evaluation Criteria', orange: true },
             ].map(({ val, label, orange }) => (
