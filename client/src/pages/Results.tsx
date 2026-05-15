@@ -3,14 +3,22 @@ import Layout from '../components/layout/Layout';
 import { teamsApi } from '../api/teams';
 import { LeaderboardEntry } from '../types';
 
-function ApprovalBadge({ approved }: { approved: boolean }) {
-  if (approved) {
+function ApprovalBadge({ uc1, uc2, uc3 }: { uc1: boolean; uc2: boolean; uc3: boolean }) {
+  const approvedCount = [uc1, uc2, uc3].filter(Boolean).length;
+  if (approvedCount === 3) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
-        Approved
+        All Use Cases Approved
+      </span>
+    );
+  }
+  if (approvedCount > 0) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-600">
+        {approvedCount}/3 Approved
       </span>
     );
   }
@@ -38,10 +46,10 @@ function ScoreBar({ value, max = 100, color }: { value: number; max?: number; co
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 const CRITERIA = [
-  { key: 'technicality', label: 'Tech', color: 'bg-blue-100 text-blue-700' },
-  { key: 'wowFactor', label: 'Wow', color: 'bg-brand-100 text-brand-700' },
-  { key: 'creativity', label: 'Creative', color: 'bg-pink-100 text-pink-700' },
-  { key: 'useCase', label: 'Use Case', color: 'bg-green-100 text-green-700' },
+  { key: 'technicality', label: 'Tech', color: 'bg-brand-100 text-brand-700' },
+  { key: 'wowFactor', label: 'Wow', color: 'bg-brand-50 text-brand-600' },
+  { key: 'creativity', label: 'Creative', color: 'bg-accent-100 text-accent-600' },
+  { key: 'useCase', label: 'Use Case', color: 'bg-brand-200 text-brand-800' },
 ];
 
 export default function Leaderboard() {
@@ -157,7 +165,7 @@ function TeamCard({ entry, rank }: { entry: LeaderboardEntry; rank: number | nul
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <h2 className="text-lg font-bold text-gray-900">{team.name}</h2>
-            <ApprovalBadge approved={team.useCaseApproved} />
+            <ApprovalBadge uc1={team.useCase1Approved} uc2={team.useCase2Approved} uc3={team.useCase3Approved} />
             {scores && (
               <span className="text-xs text-gray-400">
                 {judgeCount} {judgeCount === 1 ? 'judge' : 'judges'}
@@ -167,9 +175,20 @@ function TeamCard({ entry, rank }: { entry: LeaderboardEntry; rank: number | nul
 
           {/* Use Cases */}
           <div className="flex flex-wrap gap-2 mb-3">
-            {[team.useCase1, team.useCase2, team.useCase3].map((uc, i) => (
-              <span key={i} className="text-xs px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 font-medium border border-brand-100">
-                UC{i + 1}: {uc}
+            {[
+              { label: 'UC1', value: team.useCase1, approved: team.useCase1Approved },
+              { label: 'UC2', value: team.useCase2, approved: team.useCase2Approved },
+              { label: 'UC3', value: team.useCase3, approved: team.useCase3Approved },
+            ].map((uc) => (
+              <span
+                key={uc.label}
+                className={`text-xs px-2.5 py-1 rounded-full font-medium border ${
+                  uc.approved
+                    ? 'bg-green-50 text-green-700 border-green-200'
+                    : 'bg-brand-50 text-brand-700 border-brand-100'
+                }`}
+              >
+                {uc.approved ? '✓ ' : ''}{uc.label}: {uc.value}
               </span>
             ))}
           </div>

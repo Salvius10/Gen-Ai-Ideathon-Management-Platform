@@ -13,6 +13,12 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
     res.status(400).json({ message: 'Username, email, and password are required' });
     return;
   }
+
+  if (!email.toLowerCase().endsWith('@ganitinc.com')) {
+    res.status(400).json({ message: 'Registration is restricted to @ganitinc.com email addresses only.' });
+    return;
+  }
+
   const existing = await prisma.user.findFirst({
     where: { OR: [{ email }, { username }] },
   });

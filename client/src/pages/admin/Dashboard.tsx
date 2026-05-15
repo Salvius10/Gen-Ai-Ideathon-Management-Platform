@@ -17,13 +17,13 @@ export default function AdminDashboard() {
   const statCards = stats
     ? [
         { label: 'Total Users', value: stats.totalUsers, icon: '👥', color: 'text-brand-600', bg: 'bg-brand-50' },
-        { label: 'Teams', value: stats.totalTeams, icon: '🚀', color: 'text-blue-600', bg: 'bg-blue-50' },
-        { label: 'Submissions', value: stats.totalSubmissions, icon: '📋', color: 'text-green-600', bg: 'bg-green-50' },
-        { label: 'Evaluations', value: stats.totalEvaluations, icon: '⭐', color: 'text-amber-600', bg: 'bg-amber-50' },
-        { label: 'Participants', value: stats.byRole['PARTICIPANT'] || 0, icon: '🎯', color: 'text-brand-600', bg: 'bg-brand-50' },
-        { label: 'Mentors', value: stats.byRole['MENTOR'] || 0, icon: '🎓', color: 'text-teal-600', bg: 'bg-teal-50' },
-        { label: 'Judges', value: stats.byRole['JUDGE'] || 0, icon: '⚖️', color: 'text-orange-600', bg: 'bg-orange-50' },
-        { label: 'Admins', value: stats.byRole['ADMIN'] || 0, icon: '🛡️', color: 'text-red-600', bg: 'bg-red-50' },
+        { label: 'Teams', value: stats.totalTeams, icon: '🚀', color: 'text-brand-600', bg: 'bg-brand-50' },
+        { label: 'Submissions', value: stats.totalSubmissions, icon: '📋', color: 'text-brand-400', bg: 'bg-brand-50' },
+        { label: 'Evaluations', value: stats.totalEvaluations, icon: '⭐', color: 'text-accent-500', bg: 'bg-accent-50' },
+        { label: 'Participants', value: stats.byRole['PARTICIPANT'] || 0, icon: '🎯', color: 'text-brand-600', bg: 'bg-brand-100' },
+        { label: 'Mentors', value: stats.byRole['MENTOR'] || 0, icon: '🎓', color: 'text-accent-600', bg: 'bg-accent-50' },
+        { label: 'Judges', value: stats.byRole['JUDGE'] || 0, icon: '⚖️', color: 'text-accent-500', bg: 'bg-accent-50' },
+        { label: 'Admins', value: stats.byRole['ADMIN'] || 0, icon: '🛡️', color: 'text-brand-700', bg: 'bg-brand-50' },
       ]
     : [];
 
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
 
         <Link to="/admin/teams" className="card hover:shadow-md transition-shadow group">
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center text-2xl group-hover:bg-blue-200 transition-colors">
+            <div className="h-12 w-12 rounded-xl bg-brand-100 flex items-center justify-center text-2xl group-hover:bg-brand-200 transition-colors">
               🚀
             </div>
             <div>

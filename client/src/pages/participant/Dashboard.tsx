@@ -205,9 +205,17 @@ export default function ParticipantDashboard() {
                   </p>
                 ))}
               </div>
-              {/* Use case approval status */}
-              <div className={`mb-4 px-3 py-2 rounded-lg text-xs font-medium ${team.useCaseApproved ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
-                {team.useCaseApproved ? '✓ Use cases approved by admin' : '⏳ Use cases pending admin approval'}
+              {/* Per-use-case approval status */}
+              <div className="mb-4 space-y-1">
+                {[
+                  { label: 'UC1', approved: team.useCase1Approved },
+                  { label: 'UC2', approved: team.useCase2Approved },
+                  { label: 'UC3', approved: team.useCase3Approved },
+                ].map((uc) => (
+                  <div key={uc.label} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium ${uc.approved ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
+                    {uc.approved ? '✓' : '⏳'} {uc.label} — {uc.approved ? 'Approved' : 'Waiting for Admin Approval'}
+                  </div>
+                ))}
               </div>
 
               <div className="bg-brand-50 rounded-xl p-4 mb-4">

@@ -87,28 +87,33 @@ router.get('/teams', authenticate, requireRole('ADMIN'), async (_req: AuthReques
 });
 
 router.patch('/teams/:id/approve-usecase', authenticate, requireRole('ADMIN'), async (req: AuthRequest, res: Response): Promise<void> => {
-  const { approved } = req.body;
-  if (typeof approved !== 'boolean') {
-    res.status(400).json({ message: 'approved must be a boolean' });
+  const { useCaseNum, approved } = req.body;
+  if (typeof approved !== 'boolean' || ![1, 2, 3].includes(useCaseNum)) {
+    res.status(400).json({ message: 'useCaseNum (1|2|3) and approved (boolean) are required' });
     return;
   }
 
+  const fieldMap: Record<number, 'useCase1Approved' | 'useCase2Approved' | 'useCase3Approved'> = {
+    1: 'useCase1Approved',
+    2: 'useCase2Approved',
+    3: 'useCase3Approved',
+  };
+
   const team = await prisma.team.update({
     where: { id: req.params.id },
-    data: { useCaseApproved: approved },
+    data: { [fieldMap[useCaseNum]]: approved },
     include: {
       members: { select: { userId: true } },
     },
   });
 
-  // Notify all team members
   await prisma.notification.createMany({
     data: team.members.map((m) => ({
       userId: m.userId,
-      title: approved ? 'Use Case Approved!' : 'Use Case Approval Revoked',
+      title: approved ? `Use Case ${useCaseNum} Approved!` : `Use Case ${useCaseNum} Approval Revoked`,
       message: approved
-        ? `Your team "${team.name}" use cases have been approved by the admin.`
-        : `Your team "${team.name}" use case approval has been revoked. Please contact admin.`,
+        ? `Admin approved Use Case ${useCaseNum} for team "${team.name}".`
+        : `Admin revoked Use Case ${useCaseNum} approval for team "${team.name}".`,
     })),
   });
 

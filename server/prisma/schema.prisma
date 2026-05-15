@@ -31,7 +31,9 @@ model Team {
   useCase1         String
   useCase2         String
   useCase3         String
-  useCaseApproved  Boolean  @default(false)
+  useCase1Approved Boolean  @default(false)
+  useCase2Approved Boolean  @default(false)
+  useCase3Approved Boolean  @default(false)
   description      String
   ownerId          String   @unique
   mentorId         String?

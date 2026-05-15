@@ -104,7 +104,7 @@ export default function JudgeDashboard() {
                         {isEvaluated ? 'You Evaluated' : 'Pending Your Review'}
                       </Badge>
                       {allEvals.length > 0 && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-brand-100 text-brand-600 font-medium">
                           {allEvals.length} judge{allEvals.length !== 1 ? 's' : ''} evaluated
                         </span>
                       )}

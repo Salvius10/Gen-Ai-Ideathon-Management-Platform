@@ -123,8 +123,8 @@ export default function CheckIn2() {
               />
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-              <p className="text-sm text-blue-700">
+            <div className="bg-brand-50 rounded-xl p-4 border border-brand-100">
+              <p className="text-sm text-brand-700">
                 <strong>Note:</strong> If using GitHub, make sure your repository is public. If using SharePoint, ensure the link is accessible to the judges.
                 (In the Final Submission only Sharepoint url will be accepted)*
               </p>

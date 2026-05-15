@@ -59,7 +59,7 @@ export default function MentorDashboard() {
               <div className="text-sm text-gray-500 mt-1">Check-In 1 Done</div>
             </div>
             <div className="card text-center">
-              <div className="text-3xl font-black text-blue-600">
+              <div className="text-3xl font-black text-brand-400">
                 {teams.filter((t) => t.submission).length}
               </div>
               <div className="text-sm text-gray-500 mt-1">Final Submissions</div>
@@ -103,6 +103,32 @@ export default function MentorDashboard() {
 
                 {isExpanded && (
                   <div className="border-t border-gray-100 pt-6 mt-2 space-y-6 animate-fade-in">
+                    {/* Use Cases & Description */}
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-3">Use Cases</h3>
+                      <div className="grid sm:grid-cols-3 gap-3 mb-4">
+                        {[
+                          { label: 'Use Case 1', value: team.useCase1, approved: team.useCase1Approved },
+                          { label: 'Use Case 2', value: team.useCase2, approved: team.useCase2Approved },
+                          { label: 'Use Case 3', value: team.useCase3, approved: team.useCase3Approved },
+                        ].map((uc) => (
+                          <div key={uc.label} className={`rounded-xl p-4 border ${uc.approved ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="text-xs font-semibold text-gray-500 uppercase">{uc.label}</p>
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${uc.approved ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                {uc.approved ? 'Approved' : 'Pending'}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-800">{uc.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="bg-gray-50 rounded-xl p-4">
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Project Description</p>
+                        <p className="text-sm text-gray-800 leading-relaxed">{team.description}</p>
+                      </div>
+                    </div>
+
                     {/* Check-In 1 */}
                     <div>
                       <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">

@@ -108,8 +108,8 @@ export default function CheckIn1() {
               />
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-              <p className="text-sm text-blue-700">
+            <div className="bg-brand-50 rounded-xl p-4 border border-brand-100">
+              <p className="text-sm text-brand-700">
                 <strong>Tip:</strong> Be specific and detailed. Your mentor will use this to guide you in the right direction.
               </p>
             </div>

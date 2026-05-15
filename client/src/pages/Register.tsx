@@ -17,6 +17,10 @@ export default function Register() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!form.email.toLowerCase().endsWith('@ganitinc.com')) {
+      toast.error('Only @ganitinc.com email addresses are allowed.');
+      return;
+    }
     if (form.password !== form.confirm) {
       toast.error('Passwords do not match');
       return;
@@ -44,7 +48,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-900 via-brand-800 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
@@ -77,9 +81,18 @@ export default function Register() {
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition"
+                placeholder="yourname@ganitinc.com"
+                className={`w-full px-4 py-3 rounded-xl bg-white/10 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition ${
+                  form.email && !form.email.toLowerCase().endsWith('@ganitinc.com')
+                    ? 'border-red-400'
+                    : 'border-white/20'
+                }`}
               />
+              {form.email && !form.email.toLowerCase().endsWith('@ganitinc.com') ? (
+                <p className="text-red-400 text-xs mt-1">Must be a @ganitinc.com email address.</p>
+              ) : (
+                <p className="text-gray-500 text-xs mt-1">Only @ganitinc.com addresses accepted.</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-1.5">Password</label>

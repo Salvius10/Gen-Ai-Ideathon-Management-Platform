@@ -58,7 +58,9 @@ export interface Team {
   useCase1: string;
   useCase2: string;
   useCase3: string;
-  useCaseApproved: boolean;
+  useCase1Approved: boolean;
+  useCase2Approved: boolean;
+  useCase3Approved: boolean;
   description: string;
   ownerId: string;
   mentorId?: string | null;
@@ -89,7 +91,7 @@ export interface Evaluation {
 
 export interface EvaluationResult {
   rank: number;
-  team: Pick<Team, 'id' | 'name' | 'useCase1' | 'useCase2' | 'useCase3' | 'useCaseApproved' | 'description'> & {
+  team: Pick<Team, 'id' | 'name' | 'useCase1' | 'useCase2' | 'useCase3' | 'useCase1Approved' | 'useCase2Approved' | 'useCase3Approved' | 'description'> & {
     members: TeamMember[];
     owner: TeamMemberUser;
     submission: Submission | null;
@@ -111,7 +113,9 @@ export interface LeaderboardEntry {
     useCase1: string;
     useCase2: string;
     useCase3: string;
-    useCaseApproved: boolean;
+    useCase1Approved: boolean;
+    useCase2Approved: boolean;
+    useCase3Approved: boolean;
     members: TeamMember[];
     owner: TeamMemberUser;
     mentor: TeamMemberUser | null;
