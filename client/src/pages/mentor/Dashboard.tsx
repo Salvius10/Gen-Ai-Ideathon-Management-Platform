@@ -78,7 +78,7 @@ export default function MentorDashboard() {
                       <h2 className="text-xl font-bold text-gray-900">{team.name}</h2>
                       <Badge variant={status.variant}>{status.label}</Badge>
                     </div>
-                    <p className="text-gray-500 text-sm">{team.problemStatement}</p>
+                    <p className="text-gray-500 text-sm">{team.useCase1}</p>
                   </div>
                   <button
                     onClick={() => setExpanded(isExpanded ? null : team.id)}

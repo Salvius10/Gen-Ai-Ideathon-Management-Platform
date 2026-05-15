@@ -6,13 +6,19 @@ import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
 const router = Router();
 
+const SUPPORT_EMAIL = 'ganit_suppost@ganitinc.com';
+
 async function isEventOpen(event: string): Promise<boolean> {
   const config = await prisma.eventConfig.findUnique({ where: { event } });
   return config?.isOpen ?? false;
 }
 
+function normalizeName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z]/g, '');
+}
+
 router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthRequest, res: Response): Promise<void> => {
-  const { name, problemStatement, description } = req.body;
+  const { name, useCase1, useCase2, useCase3, description } = req.body;
   const userId = req.user!.userId;
 
   if (!await isEventOpen('TEAM_REGISTRATION')) {
@@ -20,8 +26,8 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
     return;
   }
 
-  if (!name || !problemStatement || !description) {
-    res.status(400).json({ message: 'Name, problem statement, and description are required' });
+  if (!name || !useCase1 || !useCase2 || !useCase3 || !description) {
+    res.status(400).json({ message: 'Name, all three use cases, and description are required' });
     return;
   }
 
@@ -31,9 +37,12 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
     return;
   }
 
-  const existingName = await prisma.team.findUnique({ where: { name } });
-  if (existingName) {
-    res.status(409).json({ message: 'Team name already taken' });
+  // Fuzzy name uniqueness: normalize by stripping non-alpha chars
+  const normalizedNew = normalizeName(name);
+  const existingTeams = await prisma.team.findMany({ select: { name: true } });
+  const isDuplicate = existingTeams.some((t) => normalizeName(t.name) === normalizedNew);
+  if (isDuplicate) {
+    res.status(409).json({ message: 'A team with a similar name already exists. Please choose a different name.' });
     return;
   }
 
@@ -42,8 +51,11 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
     data: {
       name,
       code,
-      problemStatement,
+      useCase1,
+      useCase2,
+      useCase3,
       description,
+      useCaseApproved: false,
       ownerId: userId,
       members: { create: { userId } },
     },
@@ -58,8 +70,8 @@ router.post('/', authenticate, requireRole('PARTICIPANT'), async (req: AuthReque
   await prisma.notification.createMany({
     data: admins.map((a) => ({
       userId: a.id,
-      title: 'New Team Created',
-      message: `Team "${team.name}" was created and needs a mentor assignment.`,
+      title: 'New Team Created — Use Case Approval Needed',
+      message: `Team "${team.name}" was created and requires use case approval.`,
     })),
   });
 
@@ -116,11 +128,72 @@ router.post('/join', authenticate, requireRole('PARTICIPANT'), async (req: AuthR
     data: {
       userId: team.ownerId,
       title: 'New Member Joined',
-      message: `A new member joined your team "${team.name}".`,
+      message: `A new member joined your team "${team.name}". Members: ${(updated?.members.length ?? 0)}/5.`,
     },
   });
 
-  res.json(updated);
+  res.json({ ...updated, supportEmail: SUPPORT_EMAIL });
+});
+
+// Public leaderboard — all teams visible without auth
+router.get('/leaderboard', async (_req, res: Response): Promise<void> => {
+  const teams = await prisma.team.findMany({
+    include: {
+      members: { include: { user: { select: { id: true, username: true, email: true } } } },
+      mentor: { select: { id: true, username: true, email: true } },
+      owner: { select: { id: true, username: true, email: true } },
+      evaluations: true,
+    },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  const entries = teams.map((team) => {
+    const evals = team.evaluations;
+    let scores: { technicality: number; wowFactor: number; creativity: number; useCase: number; total: number } | null = null;
+
+    if (evals.length > 0) {
+      const avgTechnicality = Math.round(evals.reduce((s, e) => s + e.technicality, 0) / evals.length);
+      const avgWowFactor = Math.round(evals.reduce((s, e) => s + e.wowFactor, 0) / evals.length);
+      const avgCreativity = Math.round(evals.reduce((s, e) => s + e.creativity, 0) / evals.length);
+      const avgUseCase = Math.round(evals.reduce((s, e) => s + e.useCase, 0) / evals.length);
+      scores = {
+        technicality: avgTechnicality,
+        wowFactor: avgWowFactor,
+        creativity: avgCreativity,
+        useCase: avgUseCase,
+        total: avgTechnicality + avgWowFactor + avgCreativity + avgUseCase,
+      };
+    }
+
+    return {
+      team: {
+        id: team.id,
+        name: team.name,
+        useCase1: team.useCase1,
+        useCase2: team.useCase2,
+        useCase3: team.useCase3,
+        useCaseApproved: team.useCaseApproved,
+        members: team.members,
+        owner: team.owner,
+        mentor: team.mentor,
+        memberCount: team.members.length,
+        needsMoreMembers: team.members.length < 5,
+        supportEmail: SUPPORT_EMAIL,
+      },
+      scores,
+      judgeCount: evals.length,
+    };
+  });
+
+  // Sort: evaluated teams by score DESC, then un-evaluated alphabetically
+  entries.sort((a, b) => {
+    if (a.scores && b.scores) return b.scores.total - a.scores.total;
+    if (a.scores) return -1;
+    if (b.scores) return 1;
+    return a.team.name.localeCompare(b.team.name);
+  });
+
+  res.json(entries);
 });
 
 router.get('/', authenticate, async (_req: AuthRequest, res: Response): Promise<void> => {

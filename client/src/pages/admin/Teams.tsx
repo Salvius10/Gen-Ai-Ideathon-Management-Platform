@@ -11,6 +11,7 @@ export default function AdminTeams() {
   const [mentors, setMentors] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [assigningTeam, setAssigningTeam] = useState<string | null>(null);
+  const [approvingTeam, setApprovingTeam] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -30,6 +31,19 @@ export default function AdminTeams() {
       toast.error('Failed to assign mentor');
     } finally {
       setAssigningTeam(null);
+    }
+  };
+
+  const handleApproveUseCase = async (teamId: string, approved: boolean) => {
+    setApprovingTeam(teamId);
+    try {
+      await adminApi.approveUseCase(teamId, approved);
+      setTeams((prev) => prev.map((t) => (t.id === teamId ? { ...t, useCaseApproved: approved } : t)));
+      toast.success(approved ? 'Use cases approved!' : 'Approval revoked');
+    } catch {
+      toast.error('Failed to update approval');
+    } finally {
+      setApprovingTeam(null);
     }
   };
 
@@ -54,16 +68,29 @@ export default function AdminTeams() {
 
   const filtered = teams.filter((t) =>
     t.name.toLowerCase().includes(search.toLowerCase()) ||
-    t.problemStatement.toLowerCase().includes(search.toLowerCase())
+    t.useCase1.toLowerCase().includes(search.toLowerCase()) ||
+    t.useCase2.toLowerCase().includes(search.toLowerCase()) ||
+    t.useCase3.toLowerCase().includes(search.toLowerCase())
   );
+
+  const pendingApproval = teams.filter((t) => !t.useCaseApproved).length;
 
   return (
     <Layout>
       <div className="mb-6">
         <Link to="/admin" className="text-sm text-gray-500 hover:text-gray-700">← Admin</Link>
         <h1 className="text-3xl font-bold text-gray-900 mt-1">Manage Teams</h1>
-        <p className="text-gray-500 mt-1">Assign mentors and monitor team progress.</p>
+        <p className="text-gray-500 mt-1">Approve use cases, assign mentors and monitor team progress.</p>
       </div>
+
+      {pendingApproval > 0 && !loading && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+          <span className="text-2xl">⏳</span>
+          <p className="text-amber-800 text-sm">
+            <strong>{pendingApproval} team{pendingApproval > 1 ? 's' : ''}</strong> {pendingApproval > 1 ? 'have' : 'has'} use cases waiting for your approval.
+          </p>
+        </div>
+      )}
 
       {mentors.length === 0 && !loading && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
@@ -78,7 +105,7 @@ export default function AdminTeams() {
       <div className="card mb-6">
         <input
           type="text"
-          placeholder="Search teams by name or problem..."
+          placeholder="Search teams by name or use case..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="input"
@@ -88,7 +115,7 @@ export default function AdminTeams() {
       {loading ? (
         <div className="space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-36 rounded-2xl bg-gray-100 animate-pulse" />
+            <div key={i} className="h-44 rounded-2xl bg-gray-100 animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
@@ -102,24 +129,43 @@ export default function AdminTeams() {
           {filtered.map((team) => {
             const status = getStatus(team);
             return (
-              <div key={team.id} className="card">
+              <div key={team.id} className={`card ${!team.useCaseApproved ? 'border-amber-200' : ''}`}>
                 <div className="flex flex-col lg:flex-row lg:items-start gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <h2 className="text-lg font-bold text-gray-900">{team.name}</h2>
                       <Badge variant={status.variant}>{status.label}</Badge>
+                      {team.useCaseApproved ? (
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold">Use Cases Approved</span>
+                      ) : (
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold">Pending Approval</span>
+                      )}
                       <span className="text-xs text-gray-400 font-mono">Code: {team.code}</span>
                     </div>
-                    <p className="text-gray-500 text-sm mb-3">{team.problemStatement}</p>
+
+                    {/* Use Cases */}
+                    <div className="flex flex-col gap-1 mb-3">
+                      {[team.useCase1, team.useCase2, team.useCase3].map((uc, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <span className="text-xs font-semibold text-brand-600 shrink-0 mt-0.5">UC{i + 1}</span>
+                          <span className="text-sm text-gray-700">{uc}</span>
+                        </div>
+                      ))}
+                    </div>
 
                     {/* Members */}
                     <div className="flex flex-wrap gap-2 mb-3">
                       {team.members?.map((m) => (
                         <span key={m.id} className="px-2 py-1 rounded-full bg-gray-100 text-xs text-gray-600 font-medium">
                           {m.user.username}
-                          {m.userId === team.ownerId && ' (L)'}
+                          {m.userId === team.ownerId && ' (Lead)'}
                         </span>
                       ))}
+                      {(team.members?.length ?? 0) < 5 && (
+                        <span className="px-2 py-1 rounded-full bg-red-50 text-xs text-red-600 font-medium border border-red-200">
+                          {team.members?.length ?? 0}/5 members
+                        </span>
+                      )}
                     </div>
 
                     {/* Progress chips */}
@@ -140,6 +186,28 @@ export default function AdminTeams() {
                   </div>
 
                   <div className="flex flex-col gap-3 flex-shrink-0 lg:w-56">
+                    {/* Use case approval */}
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase mb-1.5 block">Use Case Approval</label>
+                      {team.useCaseApproved ? (
+                        <button
+                          onClick={() => handleApproveUseCase(team.id, false)}
+                          disabled={approvingTeam === team.id}
+                          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-green-50 text-green-700 font-medium hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors disabled:opacity-50"
+                        >
+                          {approvingTeam === team.id ? 'Updating...' : 'Approved — Click to Revoke'}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleApproveUseCase(team.id, true)}
+                          disabled={approvingTeam === team.id}
+                          className="w-full text-sm border border-amber-200 rounded-lg px-3 py-2 bg-amber-50 text-amber-700 font-medium hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-colors disabled:opacity-50"
+                        >
+                          {approvingTeam === team.id ? 'Approving...' : 'Approve Use Cases'}
+                        </button>
+                      )}
+                    </div>
+
                     {/* Mentor assignment */}
                     <div>
                       <label className="text-xs font-semibold text-gray-500 uppercase mb-1.5 block">Assign Mentor</label>

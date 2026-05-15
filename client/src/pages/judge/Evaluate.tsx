@@ -92,7 +92,7 @@ export default function EvaluatePage() {
 
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">{team.name}</h1>
-          <p className="text-gray-500">{team.problemStatement}</p>
+          <p className="text-gray-500">{team.useCase1}</p>
         </div>
 
         {/* Team & Submission Info */}

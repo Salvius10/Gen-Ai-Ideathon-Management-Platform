@@ -44,11 +44,11 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-900 via-purple-900 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-900 via-brand-800 to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-brand-400 to-purple-400 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 flex items-center justify-center">
               <span className="text-white font-black text-sm">AI</span>
             </div>
             <span className="text-white font-bold text-xl">Gen-AI Ideathon</span>
@@ -106,7 +106,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 text-white font-bold hover:from-brand-400 hover:to-purple-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-lg"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-400 text-white font-bold hover:from-brand-500 hover:to-brand-300 transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-lg"
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </button>

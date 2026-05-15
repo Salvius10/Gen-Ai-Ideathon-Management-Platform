@@ -86,7 +86,10 @@ router.get('/results', async (_req, res: Response): Promise<void> => {
         team: {
           id: team.id,
           name: team.name,
-          problemStatement: team.problemStatement,
+          useCase1: team.useCase1,
+          useCase2: team.useCase2,
+          useCase3: team.useCase3,
+          useCaseApproved: team.useCaseApproved,
           description: team.description,
           members: team.members,
           owner: team.owner,
@@ -120,7 +123,7 @@ router.get('/my', authenticate, requireRole('JUDGE'), async (req: AuthRequest, r
     where: { judgeId: req.user!.userId },
     include: {
       team: {
-        select: { id: true, name: true, problemStatement: true, submission: true },
+        select: { id: true, name: true, useCase1: true, useCase2: true, useCase3: true, submission: true },
       },
     },
     orderBy: { createdAt: 'desc' },

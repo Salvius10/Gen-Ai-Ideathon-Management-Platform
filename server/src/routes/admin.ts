@@ -86,6 +86,35 @@ router.get('/teams', authenticate, requireRole('ADMIN'), async (_req: AuthReques
   res.json(teams);
 });
 
+router.patch('/teams/:id/approve-usecase', authenticate, requireRole('ADMIN'), async (req: AuthRequest, res: Response): Promise<void> => {
+  const { approved } = req.body;
+  if (typeof approved !== 'boolean') {
+    res.status(400).json({ message: 'approved must be a boolean' });
+    return;
+  }
+
+  const team = await prisma.team.update({
+    where: { id: req.params.id },
+    data: { useCaseApproved: approved },
+    include: {
+      members: { select: { userId: true } },
+    },
+  });
+
+  // Notify all team members
+  await prisma.notification.createMany({
+    data: team.members.map((m) => ({
+      userId: m.userId,
+      title: approved ? 'Use Case Approved!' : 'Use Case Approval Revoked',
+      message: approved
+        ? `Your team "${team.name}" use cases have been approved by the admin.`
+        : `Your team "${team.name}" use case approval has been revoked. Please contact admin.`,
+    })),
+  });
+
+  res.json(team);
+});
+
 router.delete('/teams/:id', authenticate, requireRole('ADMIN'), async (req: AuthRequest, res: Response): Promise<void> => {
   await prisma.team.delete({ where: { id: req.params.id } });
   res.json({ message: 'Team deleted' });

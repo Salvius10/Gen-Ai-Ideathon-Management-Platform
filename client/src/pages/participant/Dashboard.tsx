@@ -198,7 +198,17 @@ export default function ParticipantDashboard() {
               </div>
 
               <h3 className="font-semibold text-gray-900 text-xl mb-1">{team.name}</h3>
-              <p className="text-sm text-gray-500 mb-4 line-clamp-2">{team.problemStatement}</p>
+              <div className="flex flex-col gap-1 mb-4">
+                {[team.useCase1, team.useCase2, team.useCase3].filter(Boolean).map((uc, i) => (
+                  <p key={i} className="text-xs text-gray-500">
+                    <span className="font-semibold text-brand-600">UC{i + 1}:</span> {uc}
+                  </p>
+                ))}
+              </div>
+              {/* Use case approval status */}
+              <div className={`mb-4 px-3 py-2 rounded-lg text-xs font-medium ${team.useCaseApproved ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
+                {team.useCaseApproved ? '✓ Use cases approved by admin' : '⏳ Use cases pending admin approval'}
+              </div>
 
               <div className="bg-brand-50 rounded-xl p-4 mb-4">
                 <div className="flex items-center justify-between mb-2">
@@ -212,7 +222,7 @@ export default function ParticipantDashboard() {
               <div className="space-y-2">
                 {team.members?.map((m) => (
                   <div key={m.id} className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-brand-400 to-purple-500 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-700 flex items-center justify-center">
                       <span className="text-white text-xs font-bold uppercase">{m.user.username[0]}</span>
                     </div>
                     <div>
@@ -225,6 +235,19 @@ export default function ParticipantDashboard() {
                   </div>
                 ))}
               </div>
+              {(team.members?.length ?? 0) < 5 && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-xs text-red-700 font-semibold mb-1">
+                    Your team needs {5 - (team.members?.length ?? 0)} more member{5 - (team.members?.length ?? 0) > 1 ? 's' : ''}
+                  </p>
+                  <p className="text-xs text-red-600">
+                    Teams must have exactly 5 members. Need help?{' '}
+                    <a href="mailto:ganit_suppost@ganitinc.com" className="underline font-medium">
+                      ganit_suppost@ganitinc.com
+                    </a>
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

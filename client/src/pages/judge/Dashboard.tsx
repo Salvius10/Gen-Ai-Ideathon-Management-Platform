@@ -17,7 +17,7 @@ interface SubmissionWithTeam extends Submission {
   team: {
     id: string;
     name: string;
-    problemStatement: string;
+    useCase1: string;
     members: { id: string; user: { id: string; username: string } }[];
     owner: { id: string; username: string };
     evaluations: JudgeEvalSummary[];
@@ -109,7 +109,7 @@ export default function JudgeDashboard() {
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-500 text-sm mb-2">{sub.team.problemStatement}</p>
+                    <p className="text-gray-500 text-sm mb-2">{sub.team.useCase1}</p>
                     <div className="flex items-center gap-4 text-xs text-gray-400">
                       <span>{sub.team.members?.length ?? 0} members</span>
                       <a

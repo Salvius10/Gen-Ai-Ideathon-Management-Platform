@@ -20,7 +20,7 @@ export default function AdminDashboard() {
         { label: 'Teams', value: stats.totalTeams, icon: '🚀', color: 'text-blue-600', bg: 'bg-blue-50' },
         { label: 'Submissions', value: stats.totalSubmissions, icon: '📋', color: 'text-green-600', bg: 'bg-green-50' },
         { label: 'Evaluations', value: stats.totalEvaluations, icon: '⭐', color: 'text-amber-600', bg: 'bg-amber-50' },
-        { label: 'Participants', value: stats.byRole['PARTICIPANT'] || 0, icon: '🎯', color: 'text-purple-600', bg: 'bg-purple-50' },
+        { label: 'Participants', value: stats.byRole['PARTICIPANT'] || 0, icon: '🎯', color: 'text-brand-600', bg: 'bg-brand-50' },
         { label: 'Mentors', value: stats.byRole['MENTOR'] || 0, icon: '🎓', color: 'text-teal-600', bg: 'bg-teal-50' },
         { label: 'Judges', value: stats.byRole['JUDGE'] || 0, icon: '⚖️', color: 'text-orange-600', bg: 'bg-orange-50' },
         { label: 'Admins', value: stats.byRole['ADMIN'] || 0, icon: '🛡️', color: 'text-red-600', bg: 'bg-red-50' },

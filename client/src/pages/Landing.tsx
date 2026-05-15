@@ -11,9 +11,9 @@ const timelineItems = [
 ];
 
 const rules = [
-  'Teams must have 2 to 5 members.',
+  'Teams must have exactly 5 members.',
   'Each member can belong to exactly one team.',
-  'Problem statements must focus on real-world Gen-AI applications.',
+  'Teams must submit 3 use case names that will be reviewed by admin.',
   'All code must be original and developed during the event.',
   'Final submissions are locked — no edits after submission.',
   'Judges score each project on four criteria (max 400 points).',
@@ -42,12 +42,12 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0614]">
+    <div className="min-h-screen bg-[#060320]">
       <Navbar />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-900/80 via-purple-900/60 to-[#0a0614]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-900/80 via-brand-800/60 to-[#060320]" />
         <div className="absolute inset-0">
           {Array.from({ length: 20 }).map((_, i) => (
             <div
@@ -67,13 +67,13 @@ export default function Landing() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-sm font-medium mb-6 animate-fade-in">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-accent-400 animate-pulse" />
             Applications Open · 2026
           </div>
 
           <h1 className="text-5xl sm:text-7xl font-black text-white mb-6 leading-tight animate-slide-up">
             Gen-AI{' '}
-            <span className="bg-gradient-to-r from-brand-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand-400 to-accent-400 bg-clip-text text-transparent">
               Ideathon
             </span>
             <br />
@@ -88,7 +88,7 @@ export default function Landing() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
             <Link
               to={getDashboardLink()}
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-bold text-lg hover:from-brand-500 hover:to-purple-500 transition-all shadow-lg shadow-brand-900/50 hover:shadow-xl hover:-translate-y-0.5"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-600 to-brand-400 text-white font-bold text-lg hover:from-brand-500 hover:to-brand-300 transition-all shadow-lg shadow-brand-900/50 hover:shadow-xl hover:-translate-y-0.5"
             >
               {user ? 'Go to Dashboard' : 'Register Now'}
             </Link>
@@ -101,7 +101,7 @@ export default function Landing() {
           </div>
 
           <div className="flex items-center justify-center gap-8 mt-16 text-center">
-            {[['48h', 'Hackathon'], ['∞', 'Creativity'], ['4', 'Evaluation Criteria']].map(([val, label]) => (
+            {[['48h', 'Hackathon'], ['5', 'Members per Team'], ['4', 'Evaluation Criteria']].map(([val, label]) => (
               <div key={label}>
                 <div className="text-3xl font-black text-white">{val}</div>
                 <div className="text-sm text-gray-400 mt-1">{label}</div>
@@ -124,7 +124,7 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: '🤝', title: 'Collaborate', desc: 'Form diverse teams of 2–5 people. Different backgrounds bring breakthrough ideas.' },
+              { icon: '🤝', title: 'Collaborate', desc: 'Form teams of exactly 5 people. Different backgrounds bring breakthrough ideas.' },
               { icon: '🚀', title: 'Build', desc: 'Create real applications using LLMs, diffusion models, RAG, agents, and more.' },
               { icon: '🏆', title: 'Win', desc: 'Get evaluated by expert judges and earn recognition for your innovative solution.' },
             ].map((item) => (
@@ -139,7 +139,7 @@ export default function Landing() {
       </section>
 
       {/* Evaluation Criteria */}
-      <section className="py-24 bg-[#0a0614]">
+      <section className="py-24 bg-[#060320]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Evaluation Criteria</h2>
@@ -148,7 +148,7 @@ export default function Landing() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {criteria.map((c) => (
-              <div key={c.name} className="p-6 rounded-2xl bg-gradient-to-br from-brand-900/60 to-purple-900/40 border border-brand-800/50 text-center">
+              <div key={c.name} className="p-6 rounded-2xl bg-gradient-to-br from-brand-900/60 to-brand-800/40 border border-brand-800/50 text-center">
                 <div className="text-4xl mb-3">{c.icon}</div>
                 <h3 className="font-bold text-white text-lg mb-2">{c.name}</h3>
                 <p className="text-gray-400 text-sm">{c.desc}</p>
@@ -183,21 +183,21 @@ export default function Landing() {
       </section>
 
       {/* Timeline */}
-      <section className="py-24 bg-[#0a0614]">
+      <section className="py-24 bg-[#060320]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Event Timeline</h2>
           </div>
           <div className="relative">
-            <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-brand-600 to-purple-600" />
+            <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-brand-600 to-accent-500" />
             <div className="space-y-8">
               {timelineItems.map((item, i) => (
                 <div key={i} className="relative flex items-start gap-6">
-                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-brand-600 to-purple-600 flex items-center justify-center z-10">
+                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center z-10">
                     <span className="text-white font-bold text-sm">{i + 1}</span>
                   </div>
                   <div className="flex-1 pb-8">
-                    <p className="text-brand-400 text-sm font-medium mb-1">{item.date}</p>
+                    <p className="text-accent-400 text-sm font-medium mb-1">{item.date}</p>
                     <h3 className="text-white font-bold text-lg">{item.label}</h3>
                     <p className="text-gray-400 mt-1">{item.desc}</p>
                   </div>
@@ -209,10 +209,10 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-to-br from-brand-900 to-purple-900">
+      <section className="py-24 bg-gradient-to-br from-brand-900 to-brand-800">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to Innovate?</h2>
-          <p className="text-gray-300 text-lg mb-10">Join hundreds of developers building the future of AI. Registration is free.</p>
+          <p className="text-gray-300 text-lg mb-10">Join developers building the future of AI. Registration is free.</p>
           <Link
             to={user ? getDashboardLink() : '/register'}
             className="px-10 py-4 rounded-xl bg-white text-brand-700 font-bold text-lg hover:bg-gray-100 transition-all shadow-xl hover:-translate-y-0.5 inline-block"

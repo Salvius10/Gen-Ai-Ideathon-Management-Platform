@@ -15,6 +15,9 @@ export const adminApi = {
 
   deleteTeam: (teamId: string) => api.delete(`/admin/teams/${teamId}`),
 
+  approveUseCase: (teamId: string, approved: boolean) =>
+    api.patch<Team>(`/admin/teams/${teamId}/approve-usecase`, { approved }).then((r) => r.data),
+
   getMentors: () => api.get<User[]>('/mentors').then((r) => r.data),
 
   assignMentor: (teamId: string, mentorId: string) =>

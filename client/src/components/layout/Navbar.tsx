@@ -23,7 +23,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-600 to-purple-600 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-600 to-brand-400 flex items-center justify-center">
               <span className="text-white font-bold text-sm">AI</span>
             </div>
             <span className="font-bold text-gray-900 text-lg hidden sm:block">Gen-AI Ideathon</span>
@@ -34,7 +34,7 @@ export default function Navbar() {
               to="/results"
               className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-brand-600 hover:bg-gray-50 rounded-lg transition-colors"
             >
-              Results
+              Leaderboard
             </Link>
 
             {user ? (
@@ -47,7 +47,7 @@ export default function Navbar() {
                 </Link>
                 <NotificationBell />
                 <div className="flex items-center gap-2 ml-2">
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-700 flex items-center justify-center">
                     <span className="text-white text-xs font-bold uppercase">
                       {user.username[0]}
                     </span>

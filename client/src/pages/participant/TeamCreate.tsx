@@ -8,8 +8,15 @@ import Layout from '../../components/layout/Layout';
 export default function TeamCreate() {
   const { refreshUser } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', problemStatement: '', description: '' });
+  const [form, setForm] = useState({
+    name: '',
+    useCase1: '',
+    useCase2: '',
+    useCase3: '',
+    description: '',
+  });
   const [loading, setLoading] = useState(false);
+  const [created, setCreated] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -17,8 +24,8 @@ export default function TeamCreate() {
     try {
       await teamsApi.create(form);
       await refreshUser();
-      toast.success('Team created successfully!');
-      navigate('/dashboard');
+      setCreated(true);
+      toast.success('Team created! Waiting for use case approval.');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to create team';
       toast.error(msg);
@@ -26,6 +33,37 @@ export default function TeamCreate() {
       setLoading(false);
     }
   };
+
+  if (created) {
+    return (
+      <Layout>
+        <div className="max-w-lg mx-auto text-center py-16">
+          <div className="w-20 h-20 mx-auto rounded-full bg-brand-50 flex items-center justify-center mb-6">
+            <svg className="w-10 h-10 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Team Created!</h1>
+          <p className="text-gray-500 mb-6">
+            Your team has been created. Your use cases are currently <strong className="text-accent-600">pending admin approval</strong>.
+            You'll receive a notification once they are reviewed.
+          </p>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
+            <p className="text-sm text-amber-800 font-semibold mb-1">What happens next?</p>
+            <ul className="text-sm text-amber-700 space-y-1 list-disc list-inside">
+              <li>Share your team code with teammates so they can join.</li>
+              <li>An admin will review and approve your use cases.</li>
+              <li>Once approved, a mentor will be assigned to your team.</li>
+              <li>Your team needs exactly 5 members to participate.</li>
+            </ul>
+          </div>
+          <button onClick={() => navigate('/dashboard')} className="btn-primary">
+            Go to Dashboard
+          </button>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -47,27 +85,54 @@ export default function TeamCreate() {
                 placeholder="e.g., Neural Pioneers"
                 className="input"
               />
-              <p className="text-xs text-gray-400 mt-1">Must be unique across all teams.</p>
+              <p className="text-xs text-gray-400 mt-1">Must be unique. Similar names (e.g. adding numbers or symbols) will also be rejected.</p>
             </div>
 
-            <div>
-              <label className="label">Problem Statement</label>
-              <input
-                type="text"
-                required
-                value={form.problemStatement}
-                onChange={(e) => setForm({ ...form, problemStatement: e.target.value })}
-                placeholder="e.g., Using GenAI to automate medical diagnosis"
-                className="input"
-              />
-              <p className="text-xs text-gray-400 mt-1">Summarize the problem you're solving.</p>
+            <div className="space-y-4">
+              <p className="text-sm font-semibold text-gray-700">Use Cases <span className="text-gray-400 font-normal">(provide 3 separate use case names)</span></p>
+
+              <div>
+                <label className="label">Use Case 1</label>
+                <input
+                  type="text"
+                  required
+                  value={form.useCase1}
+                  onChange={(e) => setForm({ ...form, useCase1: e.target.value })}
+                  placeholder="e.g., AI-powered medical diagnosis"
+                  className="input"
+                />
+              </div>
+
+              <div>
+                <label className="label">Use Case 2</label>
+                <input
+                  type="text"
+                  required
+                  value={form.useCase2}
+                  onChange={(e) => setForm({ ...form, useCase2: e.target.value })}
+                  placeholder="e.g., Automated document summarization"
+                  className="input"
+                />
+              </div>
+
+              <div>
+                <label className="label">Use Case 3</label>
+                <input
+                  type="text"
+                  required
+                  value={form.useCase3}
+                  onChange={(e) => setForm({ ...form, useCase3: e.target.value })}
+                  placeholder="e.g., Real-time fraud detection"
+                  className="input"
+                />
+              </div>
             </div>
 
             <div>
               <label className="label">Project Description</label>
               <textarea
                 required
-                rows={5}
+                rows={4}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Describe your project idea, how it uses AI, and what makes it unique..."
@@ -78,10 +143,10 @@ export default function TeamCreate() {
             <div className="bg-brand-50 rounded-xl p-4 border border-brand-100">
               <h3 className="font-semibold text-brand-800 text-sm mb-2">After creating your team:</h3>
               <ul className="text-sm text-brand-700 space-y-1 list-disc list-inside">
-                <li>A unique team code will be generated.</li>
-                <li>Share the code with teammates so they can join.</li>
-                <li>Teams can have up to 5 members.</li>
-                <li>An admin will assign your mentor.</li>
+                <li>Your use cases will be sent for admin approval.</li>
+                <li>A unique team code will be generated — share it with teammates.</li>
+                <li>Teams must have exactly 5 members.</li>
+                <li>An admin will assign your mentor after use case approval.</li>
               </ul>
             </div>
 

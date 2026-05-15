@@ -153,8 +153,8 @@ export default function SubmissionPage() {
                   <span className="font-medium text-gray-900">{team.members?.length ?? 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Problem Statement:</span>
-                  <span className="font-medium text-gray-900 text-right max-w-xs">{team.problemStatement}</span>
+                  <span>Use Case 1:</span>
+                  <span className="font-medium text-gray-900 text-right max-w-xs">{team.useCase1}</span>
                 </div>
               </div>
             </div>

@@ -55,7 +55,10 @@ export interface Team {
   id: string;
   name: string;
   code: string;
-  problemStatement: string;
+  useCase1: string;
+  useCase2: string;
+  useCase3: string;
+  useCaseApproved: boolean;
   description: string;
   ownerId: string;
   mentorId?: string | null;
@@ -80,13 +83,13 @@ export interface Evaluation {
   total: number;
   comments?: string | null;
   createdAt: string;
-  team?: Pick<Team, 'id' | 'name' | 'problemStatement'> & { submission?: Submission | null };
+  team?: Pick<Team, 'id' | 'name' | 'useCase1' | 'useCase2' | 'useCase3'> & { submission?: Submission | null };
   judge?: { id: string; username: string };
 }
 
 export interface EvaluationResult {
   rank: number;
-  team: Pick<Team, 'id' | 'name' | 'problemStatement' | 'description'> & {
+  team: Pick<Team, 'id' | 'name' | 'useCase1' | 'useCase2' | 'useCase3' | 'useCaseApproved' | 'description'> & {
     members: TeamMember[];
     owner: TeamMemberUser;
     submission: Submission | null;
@@ -98,6 +101,31 @@ export interface EvaluationResult {
     useCase: number;
     total: number;
   };
+  judgeCount: number;
+}
+
+export interface LeaderboardEntry {
+  team: {
+    id: string;
+    name: string;
+    useCase1: string;
+    useCase2: string;
+    useCase3: string;
+    useCaseApproved: boolean;
+    members: TeamMember[];
+    owner: TeamMemberUser;
+    mentor: TeamMemberUser | null;
+    memberCount: number;
+    needsMoreMembers: boolean;
+    supportEmail: string;
+  };
+  scores: {
+    technicality: number;
+    wowFactor: number;
+    creativity: number;
+    useCase: number;
+    total: number;
+  } | null;
   judgeCount: number;
 }
 

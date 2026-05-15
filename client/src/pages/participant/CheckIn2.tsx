@@ -73,7 +73,7 @@ export default function CheckIn2() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-bold">Step 5</span>
+            <span className="px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-sm font-bold">Step 5</span>
             <h1 className="text-3xl font-bold text-gray-900">Check-In 2</h1>
           </div>
           <p className="text-gray-500">Share your GitHub / SharePoint link and current implementation progress.</p>
