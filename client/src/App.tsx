@@ -1,44 +1,45 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Results from './pages/Results';
-
-import ParticipantDashboard from './pages/participant/Dashboard';
-import TeamCreate from './pages/participant/TeamCreate';
-import TeamJoin from './pages/participant/TeamJoin';
-import CheckIn1Page from './pages/participant/CheckIn1';
-import CheckIn2Page from './pages/participant/CheckIn2';
-import SubmissionPage from './pages/participant/Submission';
-
-import MentorDashboard from './pages/mentor/Dashboard';
-
-import JudgeDashboard from './pages/judge/Dashboard';
-import EvaluatePage from './pages/judge/Evaluate';
-
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminTeams from './pages/admin/Teams';
-import AdminUsers from './pages/admin/Users';
-import AdminEventControl from './pages/admin/EventControl';
-
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleRoute from './components/RoleRoute';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 
+const Landing = lazy(() => import('./pages/Landing'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Results = lazy(() => import('./pages/Results'));
+
+const ParticipantDashboard = lazy(() => import('./pages/participant/Dashboard'));
+const TeamCreate = lazy(() => import('./pages/participant/TeamCreate'));
+const TeamJoin = lazy(() => import('./pages/participant/TeamJoin'));
+const CheckIn1Page = lazy(() => import('./pages/participant/CheckIn1'));
+const CheckIn2Page = lazy(() => import('./pages/participant/CheckIn2'));
+const SubmissionPage = lazy(() => import('./pages/participant/Submission'));
+
+const MentorDashboard = lazy(() => import('./pages/mentor/Dashboard'));
+
+const JudgeDashboard = lazy(() => import('./pages/judge/Dashboard'));
+const EvaluatePage = lazy(() => import('./pages/judge/Evaluate'));
+
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminTeams = lazy(() => import('./pages/admin/Teams'));
+const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const AdminEventControl = lazy(() => import('./pages/admin/EventControl'));
+
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-900 to-brand-700">
+    <LoadingSpinner size="lg" />
+  </div>
+);
+
 export default function App() {
   const { loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-900 to-brand-700">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
+  if (loading) return <PageLoader />;
 
   return (
+    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
@@ -78,5 +79,6 @@ export default function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   );
 }

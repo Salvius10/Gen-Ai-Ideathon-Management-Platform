@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/layout/Navbar';
@@ -46,6 +47,17 @@ const aboutCards = [
 export default function Landing() {
   const { user } = useAuth();
 
+  const blueOrbs = useMemo(() => Array.from({ length: 14 }).map(() => ({
+    w: Math.random() * 200 + 50, h: Math.random() * 200 + 50,
+    l: Math.random() * 100, t: Math.random() * 100,
+    delay: Math.random() * 6, dur: Math.random() * 4 + 4,
+  })), []);
+  const orangeOrbs = useMemo(() => Array.from({ length: 6 }).map(() => ({
+    w: Math.random() * 150 + 40, h: Math.random() * 150 + 40,
+    l: Math.random() * 100, t: Math.random() * 100,
+    delay: Math.random() * 6, dur: Math.random() * 4 + 5,
+  })), []);
+
   const getDashboardLink = () => {
     if (!user) return '/register';
     const map: Record<string, string> = {
@@ -66,33 +78,19 @@ export default function Landing() {
         <div className="absolute inset-0 bg-gradient-to-br from-brand-900/80 via-brand-800/60 to-brand-900" />
         {/* Blue floating orbs */}
         <div className="absolute inset-0">
-          {Array.from({ length: 14 }).map((_, i) => (
+          {blueOrbs.map((o, i) => (
             <div
               key={i}
               className="absolute rounded-full bg-brand-500/10 animate-float"
-              style={{
-                width: `${Math.random() * 200 + 50}px`,
-                height: `${Math.random() * 200 + 50}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 6}s`,
-                animationDuration: `${Math.random() * 4 + 4}s`,
-              }}
+              style={{ width: `${o.w}px`, height: `${o.h}px`, left: `${o.l}%`, top: `${o.t}%`, animationDelay: `${o.delay}s`, animationDuration: `${o.dur}s` }}
             />
           ))}
           {/* Orange floating orbs */}
-          {Array.from({ length: 6 }).map((_, i) => (
+          {orangeOrbs.map((o, i) => (
             <div
               key={`o-${i}`}
               className="absolute rounded-full bg-accent-500/10 animate-float"
-              style={{
-                width: `${Math.random() * 150 + 40}px`,
-                height: `${Math.random() * 150 + 40}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 6}s`,
-                animationDuration: `${Math.random() * 4 + 5}s`,
-              }}
+              style={{ width: `${o.w}px`, height: `${o.h}px`, left: `${o.l}%`, top: `${o.t}%`, animationDelay: `${o.delay}s`, animationDuration: `${o.dur}s` }}
             />
           ))}
         </div>

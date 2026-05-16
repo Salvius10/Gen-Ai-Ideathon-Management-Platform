@@ -87,15 +87,6 @@ export default function Login() {
             </Link>
           </p>
         </div>
-
-        <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400">
-          <p className="font-semibold text-gray-300 mb-2">Demo Accounts:</p>
-          <div className="space-y-1">
-            <p>Admin: admin@ideathon.com / admin123</p>
-            <p>Judge: judge1@ideathon.com / judge123</p>
-            <p>Mentor: mentor1@ideathon.com / mentor123</p>
-          </div>
-        </div>
       </div>
     </div>
   );
